@@ -1,21 +1,28 @@
-
-
 type SendMessageType = 'MSG' | 'INFO'
 
 interface MessageInterface {
-    type: 'MY'|'CP';
+    type: 'MY'|'PT'| 'INFO'| 'ERR';
     message: string;
     stamp: number;
+    extra?: any,
+}
+
+interface ServerMessageInterface {
+    code: number,
+    message: string,
+    stamp: number,
+    extra?: any
 }
 
 interface ChatStoreInterface {
-    userId: number | null;
-    contactId: number | null;
+    userName: string | null;
+    contactName: string | null;
     messages: MessageInterface[];
     token: string | null;
 }
 
 export type {
+    ServerMessageInterface,
     MessageInterface,
     ChatStoreInterface,
     SendMessageType,

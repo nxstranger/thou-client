@@ -7,15 +7,15 @@
     "JSX": "readonly"
   },
   "extends": [
+    "eslint:recommended",
     "plugin:react/recommended"
-//    "airbnb"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 12,
+    "ecmaVersion": 2021,
     "sourceType": "module"
   },
   "plugins": [

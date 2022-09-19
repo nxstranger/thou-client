@@ -1,48 +1,80 @@
-import React, {useCallback, useState} from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import env from "../modules/conf";
-import { addMessage } from "../store/chatSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {addMessage, unAuthorizeUser} from "../store/chatSlice";
+import { useAppDispatch, useAppSelector } from "./storeHooks";
 import {SendMessageType} from "../interfaces/chatInterfaces";
 
 const useChat = () => {
     const [isConnected, setIsConnected] = useState(false)
     const socket = useRef<null | WebSocket>(null);
+    const reconnectTimeout = useRef<null | any>(null)
     const dispatch = useAppDispatch();
-    const userId = useAppSelector((state) => state.chat.userId);
-    const contactId = useAppSelector((state) => state.chat.contactId);
+    const token = useAppSelector(({chat}) => chat.token);
+    const contactName = useAppSelector(({chat}) => chat.contactName);
 
-
-    const connectToSocket = () => {
-        const path = `${env.wsHost}?userId=${userId}`;
-        socket.current = new WebSocket(path);
-        socket.current.onopen = () => {
-            console.log('connected');
-            setIsConnected(true);
+    const sockOnOpen = () => {
+        console.log('connected');
+        setIsConnected(true);
+        console.log('sockOnOpen / isConnected', isConnected);
+        dispatch(addMessage({
+            type: 'INFO',
+            message: 'You are connected',
+            stamp: +(new Date()).getTime(),
+        }));
+        console.log('reconnectTimeout', reconnectTimeout.current);
+        if (reconnectTimeout.current) {
+            console.log('Clear timeout');
+            clearTimeout(reconnectTimeout.current);
         }
-        socket.current.onclose = () => {
-            console.log('disconnected');
+    };
+
+    const sockOnClose = (userToken: string) => ({code, type}: CloseEvent) => {
+        console.log('sockOnClose / isConnected', isConnected);
+        console.log(`disconnected code:${code}, ${type}`);
+        if (isConnected) {
+            dispatch(addMessage({
+                type: 'INFO',
+                message: 'You are disconnected',
+                stamp: +(new Date()).getTime(),
+            }));
             setIsConnected(false);
-            setTimeout(() => {
-                if (!isConnected) { connectToSocket(); }
-            }, 2000);
-            socket.current = null;
-        };
-        socket.current.onmessage = (msg) => {
-            console.log(msg);
-            dispatch(addMessage({type: 'CP', stamp: +(new Date()), message: msg.data}));
         }
+        if ([1000, 3008, 3500].includes(code)) {
+            dispatch(unAuthorizeUser());
+            clearTimeout(reconnectTimeout.current);
+            return;
+        }
+        reconnectTimeout.current = setTimeout(() => {
+            if (!isConnected) connectToSocket(userToken);
+        }, 3000);
+        socket.current = null;
+    };
+
+    const connectToSocket = (userToken: string) => {
+        console.log('\n\n');
+        console.log('connection props, token - ', userToken);
+        const path = `${env.wsHost}/?user=${userToken}`;
+        const ws = new WebSocket(path);
+        ws.onopen = sockOnOpen;
+        ws.onclose = sockOnClose(userToken);
+        ws.onmessage = (msg) => {
+            console.log('onmessage', msg);
+            const {stamp, message} = JSON.parse(msg.data);
+            addMessage({type:'ERR', stamp, message})
+        }
+        socket.current = ws;
     }
 
     useEffect(() => {
         console.log('useChat', socket.current);
-        if (!socket.current) { connectToSocket(); }
+        if (!socket.current && token) {
+            console.log('useEffect call connectToSocket');
+            connectToSocket(token);
+        }
         return () => {
-            console.log('sok current', socket.current);
-            console.log('sok current', socket.current && socket.current.readyState);
             if (socket.current && socket.current.readyState === 1) { socket.current.close(); }
         };
-    }, [userId, contactId]);
+    }, [token, contactName]);
 
     const sendMessage = useCallback((text:string, messageType:SendMessageType='MSG') => {
         if (socket.current) {
@@ -51,11 +83,11 @@ const useChat = () => {
                 message: text,
                 stamp: +(new Date()),
                 type: messageType,
-                contact: contactId,
+                contact: contactName,
             };
             socket.current.send(JSON.stringify(message));
         }
-    }, [userId, contactId]);
+    }, [token, contactName]);
     return { sendMessage }
 };
 

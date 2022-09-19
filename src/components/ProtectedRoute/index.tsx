@@ -1,8 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from "react-router-dom";
-import { PagesEnum } from "../Pages/pagesDescription";
-import { useAppSelector } from "../../store/hooks";
-
+import { PagesEnum } from "../../enums/pagesEnum";
+import { useAppSelector } from "../../hooks/storeHooks";
 
 const ProtectedRoute: React.FC<PropsWithChildren>= ({ children }) => {
     const isAuthorized = useAppSelector(({ chat }) => chat.token);
@@ -11,7 +10,7 @@ const ProtectedRoute: React.FC<PropsWithChildren>= ({ children }) => {
     return (
         <>
             {!isAuthorized ? (
-                <Navigate to={PagesEnum.index} state={{ from: location }} replace />
+                <Navigate to={PagesEnum.IndexPage} state={{ from: location }} replace />
             ) : (
                 children
             )}

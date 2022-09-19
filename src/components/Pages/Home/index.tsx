@@ -1,8 +1,8 @@
 import React from 'react';
 import {useEffect} from 'react';
-import LoginForm from "../../LoginForm/LoginForm";
+import LoginForm from "../../Index/LoginForm";
 import {setToken} from "../../../store/chatSlice";
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch } from '../../../hooks/storeHooks';
 
 const Home = () => {
     const dispatch = useAppDispatch();

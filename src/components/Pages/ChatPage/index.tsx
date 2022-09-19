@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import Body from "../../Body";
+import React, {useEffect} from 'react';
+import ChatBody from "../../Chat";
 import ProtectedRoute from "../../ProtectedRoute/index";
 
 const Main : React.FC = () => {
-    // const state = useState();
 
     useEffect(() => {
         console.log('Main init');
     }, []);
     return (
         <ProtectedRoute>
-            <Body />
+            <ChatBody />
         </ProtectedRoute>
     );
 };
