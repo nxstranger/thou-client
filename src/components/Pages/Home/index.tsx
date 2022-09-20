@@ -1,5 +1,4 @@
-import React from 'react';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import LoginForm from "../../Index/LoginForm";
 import {setToken} from "../../../store/chatSlice";
 import { useAppDispatch } from '../../../hooks/storeHooks';
@@ -16,7 +15,7 @@ const Home = () => {
     }, []);
     return (
         <div>
-            {"Home"}
+            {"Home page"}
             <LoginForm/>
         </div>
     );

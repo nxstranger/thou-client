@@ -13,10 +13,10 @@ const ChatBox = () => {
         <ChatBoxDiv>
             {
                 (messages.length)
-                    ? messages.map((msg) => (
+                    ? messages.map((msg, index) => (
                         <Message
                             {...msg}
-                            key={msg.stamp+msg.type}
+                            key={"k" + msg.stamp + "-" + msg.type + "-" + index}
                         />))
                     : ""
             }

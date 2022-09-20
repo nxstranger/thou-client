@@ -39,16 +39,17 @@ const updateLocalStorageData = ({ contactName, userName} : LocalStorageChatInter
     localStorage.setItem('chatStore', JSON.stringify(newChatStoreData));
 }
 
-const loadChatStore = () => {
+const getInitialState = () => {
     let localData = localStorage.getItem('chatStore');
     let initialStore: ChatStoreInterface;
     if (localData) {
         const initial = JSON.parse(localData);
-
         initialStore = {
             ...initial,
             token: "",
             messages: fakeMessages,
+            publicKey: "",
+            privateKey: "",
         };
     } else {
         const storeData = { userName: "", contactName: "" }
@@ -58,6 +59,8 @@ const loadChatStore = () => {
             token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYzMDU0MDQzLCJpYXQiOjE2NjMwNTM3NDMsImp0aSI6Ijc3MTQwOWVmN2ViZjQ5OWQ4YTBmY2EyNDE0MDU2ZTkxIiwidXNlcl9pZCI6MX0.XyQj_HsXM_uk35jOhBYiYBIOGFuCjPFqjhrsQ9_5T6s",
             contactName: "qwe8",
             messages: fakeMessages,
+            publicKey: "",
+            privateKey: "",
         }
     }
     return initialStore;
@@ -66,7 +69,7 @@ const loadChatStore = () => {
 
 const chatSlice = createSlice({
     name: 'chat',
-    initialState: loadChatStore(),
+    initialState: getInitialState(),
     reducers: {
         addMessage: (state, action:AddMessageActionInterface) => {
             const {type, message, stamp, extra} = action.payload;
@@ -78,7 +81,7 @@ const chatSlice = createSlice({
         },
         unAuthorizeUser: (state) => {
             state.token = '';
-            state.messages = state.messages.filter((msg) => msg.type !== 'INFO');
+            state.messages = [];
             state.contactName = '';
             state.userName = "";
         },

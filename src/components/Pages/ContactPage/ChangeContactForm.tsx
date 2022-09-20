@@ -6,6 +6,7 @@ import {useAppDispatch, useAppSelector} from "../../../hooks/storeHooks";
 
 const ChangeContactForm = () => {
     const contactName = useAppSelector(({chat}) => chat.contactName);
+    const userName = useAppSelector(({chat}) => chat.userName);
     const token = useAppSelector(({chat}) => chat.token);
     const dispatch = useAppDispatch();
 
@@ -14,7 +15,7 @@ const ChangeContactForm = () => {
     }, [contactName]);
     return (
         <Formik
-            initialValues={{contactName: contactName}}
+            initialValues={{contactName: (userName == 'qwe4') ? 'qwe8': 'qwe4'}}
             validationSchema={Yup.object({
                 contactName: Yup.string()
                     .min(1, 'Must include characters')

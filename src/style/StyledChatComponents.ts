@@ -57,6 +57,9 @@ const BaseMessageStyle = styled.div`
   word-wrap: break-word;
   border-radius: 5px;
   border: 1px solid #555;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const MyMessageDiv = styled(BaseMessageStyle)`
@@ -69,15 +72,29 @@ const PartnerMessageDiv = styled(BaseMessageStyle)`
   align-self: flex-start;
 `;
 
-const InfoMessageP = styled.p`
+const BaseSystemMessageStyle = styled.p`
   margin: 0;
   width: 100%;
   text-align: center;
   font-size: 0.8em;
   word-wrap: break-word;
   font-style: italic;
+`;
+
+const InfoMessageP = styled(BaseSystemMessageStyle)`
   background: beige;
 `;
+
+const ErrorMessageP = styled(BaseSystemMessageStyle)`
+  background: lightpink;
+`;
+
+const ChatTimeStampStyle = styled.div`
+  margin-top: 2px;
+  font-size: 0.7em;
+  font-style: italic;
+  text-align: right;
+`
 
 export {
     ChatBodyDiv,
@@ -86,8 +103,10 @@ export {
     MyMessageDiv,
     PartnerMessageDiv,
     InfoMessageP,
+    ErrorMessageP,
     InputFormWrapper,
     StyledMessageInput,
     StyledSubmitButton,
+    ChatTimeStampStyle,
 };
 

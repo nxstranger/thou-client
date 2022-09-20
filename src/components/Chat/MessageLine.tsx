@@ -1,7 +1,8 @@
 import React from "react";
 import {
     InfoMessageP,
-    MessageLineDiv
+    MessageLineDiv,
+    ErrorMessageP,
 } from "../../style/StyledChatComponents";
 import {MessageInterface} from "../../interfaces/chatInterfaces";
 import MyMessage from './MyMessage';
@@ -21,7 +22,7 @@ const Message = (props: MessageInterface) => {
                     case 'INFO':
                         return <InfoMessageP>{message}</InfoMessageP>
                     default:
-                        return <i>{message}</i>;
+                        return <ErrorMessageP>{message}</ErrorMessageP>;
                 }}
             )()}
         </MessageLineDiv>

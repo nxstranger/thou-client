@@ -1,4 +1,4 @@
-type SendMessageType = 'MSG' | 'INFO'
+type SendMessageType = 'MSG' | 'INFO' | 'ERR'
 
 interface MessageInterface {
     type: 'MY'|'PT'| 'INFO'| 'ERR';
@@ -19,6 +19,8 @@ interface ChatStoreInterface {
     contactName: string | null;
     messages: MessageInterface[];
     token: string | null;
+    publicKey: string | null,
+    privateKey: string | null,
 }
 
 export type {

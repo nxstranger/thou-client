@@ -2,13 +2,14 @@ import React, {useEffect} from "react";
 import * as Yup from 'yup';
 import {Formik} from "formik";
 import useChat from '../../hooks/useChat';
-import {useAppSelector} from "../../hooks/storeHooks";
+import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
 import {StyledMessageInput, StyledSubmitButton} from '../../style/StyledChatComponents';
+import {addMessage} from "../../store/chatSlice";
 
 const MsgForm = () => {
-
     const {userName, contactName} = useAppSelector(({ chat }) => chat);
     const { sendMessage } = useChat();
+    const dispatch = useAppDispatch();
     useEffect( () => {
         console.log('MsgForm init');
     }, []);
@@ -23,7 +24,13 @@ const MsgForm = () => {
             onSubmit={(values, { setSubmitting, setValues }) => {
                 setTimeout(() => {
                     console.log(JSON.stringify(values, null, 2));
-                    sendMessage(values.message);
+                    try {
+                        sendMessage(values.message);
+                    } catch (error) {
+                        let message = 'Unknown Error';
+                        if (error instanceof Error) message = error.message;
+                        dispatch(addMessage({type: "ERR", message: message, stamp: +new Date()}));
+                    }
                     setSubmitting(false);
                     setValues({ message: `qwe_${userName}`})
                 }, 500);

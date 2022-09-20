@@ -19,6 +19,7 @@ const ContactPage = () => {
 
     return (
         <ProtectedRoute>
+            {'Setup contact'}
             <ChangeContactForm />
         </ProtectedRoute>
     )
